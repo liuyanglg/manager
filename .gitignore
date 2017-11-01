@@ -1,0 +1,25 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+nuonuomanage-branch-01/.idea/
+nuonuomanage-branch-01/.svn/
+nuonuomanage-branch-01/ROOT.iml
+nuonuomanage-branch-01/WebRoot/403.jsp
+nuonuomanage-branch-01/WebRoot/404.jsp
+nuonuomanage-branch-01/WebRoot/Contents/
+nuonuomanage-branch-01/WebRoot/META-INF/
+nuonuomanage-branch-01/WebRoot/WEB-INF/
+nuonuomanage-branch-01/WebRoot/app/
+nuonuomanage-branch-01/WebRoot/baidu_verify_ic317TyYAh.html
+nuonuomanage-branch-01/WebRoot/error.jsp
+nuonuomanage-branch-01/WebRoot/favicon.ico
+nuonuomanage-branch-01/WebRoot/global.jsp
+nuonuomanage-branch-01/etc/
+nuonuomanage-branch-01/pom.xml
+nuonuomanage-branch-01/src/com/aisino/global/
+nuonuomanage-branch-01/src/com/aisino/projects/
+nuonuomanage-branch-01/src/com/aisino/sso/
+nuonuomanage-branch-01/src/ognl/
+nuonuomanage-branch-01/src/org/
+nuonuomanage-branch-01/target/
+nuonuomanage-branch-01/test/
+nuonuomanage-branch-01/testresource/

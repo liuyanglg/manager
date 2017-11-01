@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aisino.admin.companyCard.codeAssign.dao.CodeDetailDao">
+
+    <resultMap id="KPCodeDetailDOResultMap" type="KPCodeDetailDO">
+        <result column="detail_id" property="detailId" jdbcType="INTEGER"/>
+        <result column="main_id" property="mainId" jdbcType="INTEGER"/>
+        <result column="pre_assign_code" property="preAssignCode" jdbcType="VARCHAR"/>
+        <result column="assign_employee_id" property="assignEmployeeId" jdbcType="VARCHAR"/>
+        <result column="assign_employee_name" property="assignEmployeeName" jdbcType="VARCHAR"/>
+        <result column="assign_employee_mobile" property="assignEmployeeMobile" jdbcType="VARCHAR"/>
+        <result column="bind_company_name" property="bindCompanyName" jdbcType="VARCHAR"/>
+        <result column="bind_company_taxid" property="bindCompanyTaxid" jdbcType="VARCHAR"/>
+        <result column="bind_person" property="bindPerson" jdbcType="VARCHAR"/>
+        <result column="bind_time" property="bindTime"/>
+        <result column="origin_code" property="originCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="KPCodeDetailDOResultMap" parameterType="int">
+   		SELECT * FROM jskp_kpcode_assign_detail where detail_id=${value}
+   	</select>
+
+    <insert id="insert" parameterType="KPCodeDetailDO" useGeneratedKeys="true" keyProperty="detailId">
+        INSERT INTO
+        jskp_kpcode_assign_detail(main_id,pre_assign_code,assign_employee_id,assign_employee_name,assign_employee_mobile,bind_company_name,bind_company_taxid,bind_person,bind_time,origin_code,status)
+        value(#{mainId},#{preAssignCode},#{assignEmployeeId},#{assignEmployeeName},#{assignEmployeeMobile},#{bindCompanyName},#{bindCompanyTaxid},#{bindPerson},#{bindTime},#{originCode},#{status})
+    </insert>
+
+    <insert id="insertBatch" useGeneratedKeys="true" parameterType="java.util.List">
+        INSERT INTO
+        jskp_kpcode_assign_detail(main_id,pre_assign_code,assign_employee_id,assign_employee_name,assign_employee_mobile,bind_company_name,bind_company_taxid,bind_person,bind_time,origin_code,status)
+        VALUES
+        <foreach collection="list" item="KPCodeDetail" index="index" separator=",">
+            (#{KPCodeDetail.mainId},#{KPCodeDetail.preAssignCode},#{KPCodeDetail.assignEmployeeId},#{KPCodeDetail.assignEmployeeName},#{KPCodeDetail.assignEmployeeMobile},#{KPCodeDetail.bindCompanyName},#{KPCodeDetail.bindCompanyTaxid},#{KPCodeDetail.bindPerson},#{KPCodeDetail.bindTime},#{KPCodeDetail.originCode},#{KPCodeDetail.status})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="KPCodeDetailDO">
+        UPDATE jskp_kpcode_assign_detail
+        <set>
+            <if test="mainId != null">main_id=#{mainId},</if>
+            <if test="preAssignCode != null">pre_assign_code=#{preAssignCode},</if>
+            <if test="assignEmployeeId != null">assign_employee_id=#{assignEmployeeId},</if>
+            <if test="assignEmployeeName != null">assign_employee_name=#{assignEmployeeName},</if>
+            <if test="assignEmployeeMobile != null">assign_employee_mobile=#{assignEmployeeMobile},</if>
+            <if test="bindCompanyName != null">bind_company_name=#{bindCompanyName},</if>
+            <if test="bindCompanyTaxid != null">bind_company_taxid=#{bindCompanyTaxid},</if>
+            <if test="bindPerson != null">bind_person=#{bindPerson},</if>
+            <if test="bindTime != null">bind_time=#{bindTime},</if>
+            <if test="originCode != null">origin_code=#{originCode},</if>
+            <if test="status != null">status=#{status},</if>
+        </set>
+        WHERE detail_id=#{detailId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+		DELETE FROM  jskp_kpcode_assign_detail WHERE detail_id=#{value}
+   	</delete>
+
+
+    <select id="queryByIds" parameterType="_int[]" resultType="KPCodeDetailDO">
+        SELECT * FROM jskp_kpcode_assign_detail where detail_id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteBatch" parameterType="_int[]">
+        delete FROM jskp_kpcode_assign_detail where detail_id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aisino.admin.companyCard.codeAssign.dao.CodeAssignDao">
+    <resultMap id="KPAssignCodeVOResultMap" type="KPAssignCodeVO">
+        <result column="detail_id" property="detailId" jdbcType="INTEGER"/>
+        <result column="main_id" property="mainId" jdbcType="INTEGER"/>
+        <result column="pre_assign_code" property="preAssignCode" jdbcType="VARCHAR"/>
+        <result column="bind_company_name" property="bindCompanyName" jdbcType="VARCHAR"/>
+        <result column="bind_company_taxid" property="bindCompanyTaxid" jdbcType="VARCHAR"/>
+        <result column="bind_person" property="bindPerson" jdbcType="VARCHAR"/>
+        <result column="bind_time" property="bindTime"/>
+        <result column="origin_code" property="originCode" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+
+        <result column="assign_company_name" property="assignCompanyName" jdbcType="VARCHAR"/>
+        <result column="assign_company_taxid" property="assignCompanyTaxid" jdbcType="VARCHAR"/>
+        <result column="assign_employee_id" property="assignEmployeeId" jdbcType="VARCHAR"/>
+        <result column="assign_employee_name" property="assignEmployeeName" jdbcType="VARCHAR"/>
+        <result column="assign_employee_mobile" property="assignEmployeeMobile" jdbcType="VARCHAR"/>
+        <result column="assign_amount" property="assignAmount" jdbcType="INTEGER"/>
+        <result column="create_person" property="createPerson" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_person" property="modifyPerson" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <select id="queryPage" parameterType="Page" resultMap="KPAssignCodeVOResultMap">
+        SELECT M.*,D.*
+        FROM jskp_kpcode_assign_main M LEFT JOIN jskp_kpcode_assign_detail D
+        ON D.main_id=M.id
+        <where>
+            <if test="paramObj!=null">
+                <if test="paramObj.assignCompanyName != null">assign_company_name=#{paramObj.assignCompanyName}</if>
+                <if test="paramObj.assignCompanyTaxid != null">AND assign_company_taxid=#{paramObj.assignCompanyTaxid}
+                </if>
+                <if test="paramObj.assignEmployeeId != null">AND assign_employee_id=#{paramObj.assignEmployeeId}</if>
+                <if test="paramObj.assignEmployeeName != null">AND assign_employee_name=#{paramObj.assignEmployeeName}
+                </if>
+                <if test="paramObj.assignEmployeeMobile != null">AND
+                    assign_employee_mobile=#{paramObj.assignEmployeeMobile}
+                </if>
+                <if test="paramObj.assignAmount != null">AND assign_amount=#{paramObj.assignAmount}</if>
+                <if test="paramObj.createPerson != null">AND create_person=#{paramObj.createPerson}</if>
+                <if test="paramObj.createTime != null">AND create_time=#{paramObj.createTime}</if>
+                <if test="paramObj.modifyPerson != null">AND modify_person=#{paramObj.modifyPerson}</if>
+                <if test="paramObj.modifyTime != null">AND modify_time=#{paramObj.modifyTime}</if>
+
+                <if test="paramObj.mainId != null">AND main_id=#{paramObj.mainId}</if>
+                <if test="paramObj.preAssignCode != null">AND pre_assign_code=#{paramObj.preAssignCode}</if>
+                <if test="paramObj.bindCompanyName != null">AND bind_company_name=#{paramObj.bindCompanyName}</if>
+                <if test="paramObj.bindCompanyTaxid != null">AND bind_company_taxid=#{paramObj.bindCompanyTaxid}</if>
+                <if test="paramObj.bindPerson != null">AND bind_person=#{paramObj.bindPerson}</if>
+                <if test="paramObj.bindTime != null">AND bind_time=#{paramObj.bindTime}</if>
+                <if test="paramObj.originCode != null">AND origin_code=#{paramObj.originCode}</if>
+                <if test="paramObj.status != null">AND status=#{paramObj.status}</if>
+            </if>
+        </where>
+        <if test="orderCol!=null">
+            ORDER BY ${orderCol}
+        </if>
+        LIMIT ${startIndex},${pageSize}
+    </select>
+
+    <select id="count" parameterType="Page" resultType="_int">
+        SELECT COUNT(*)
+        FROM jskp_kpcode_assign_main M INNER JOIN jskp_kpcode_assign_detail D
+        ON D.main_id=M.id
+        <where>
+            <if test="paramObj!=null">
+                <if test="paramObj.assignCompanyName != null">assign_company_name=#{paramObj.assignCompanyName}</if>
+                <if test="paramObj.assignCompanyTaxid != null">AND assign_company_taxid=#{paramObj.assignCompanyTaxid}
+                </if>
+                <if test="paramObj.assignEmployeeId != null">AND assign_employee_id=#{paramObj.assignEmployeeId}</if>
+                <if test="paramObj.assignEmployeeName != null">AND assign_employee_name=#{paramObj.assignEmployeeName}
+                </if>
+                <if test="paramObj.assignEmployeeMobile != null">AND
+                    assign_employee_mobile=#{paramObj.assignEmployeeMobile}
+                </if>
+                <if test="paramObj.assignAmount != null">AND assign_amount=#{paramObj.assignAmount}</if>
+                <if test="paramObj.createPerson != null">AND create_person=#{paramObj.createPerson}</if>
+                <if test="paramObj.createTime != null">AND create_time=#{paramObj.createTime}</if>
+                <if test="paramObj.modifyPerson != null">AND modify_person=#{paramObj.modifyPerson}</if>
+                <if test="paramObj.modifyTime != null">AND modify_time=#{paramObj.modifyTime}</if>
+
+                <if test="paramObj.mainId != null">AND main_id=#{paramObj.mainId}</if>
+                <if test="paramObj.preAssignCode != null">AND pre_assign_code=#{paramObj.preAssignCode}</if>
+                <if test="paramObj.bindCompanyName != null">AND bind_company_name=#{paramObj.bindCompanyName}</if>
+                <if test="paramObj.bindCompanyTaxid != null">AND bind_company_taxid=#{paramObj.bindCompanyTaxid}</if>
+                <if test="paramObj.bindPerson != null">AND bind_person=#{paramObj.bindPerson}</if>
+                <if test="paramObj.bindTime != null">AND bind_time=#{paramObj.bindTime}</if>
+                <if test="paramObj.originCode != null">AND origin_code=#{paramObj.originCode}</if>
+                <if test="paramObj.status != null">AND status=#{paramObj.status}</if>
+            </if>
+        </where>
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

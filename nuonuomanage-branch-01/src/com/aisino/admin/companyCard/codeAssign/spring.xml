@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-3.2.xsd" >
+
+	<bean name="companyApi"
+		  class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl" value="${usercenter.url}/remote/allow/userCenterOrgDataRmtService"></property>
+		<property name="serviceInterface" value="com.aisino.projects.usercenter.redis.support.service.IUserCenterRedisService"></property>
+	</bean>
+
+
+	<!-- 六位代码分配明细信息dao -->
+	<bean id="codeDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+    	<property name="mapperInterface" value="com.aisino.admin.companyCard.codeAssign.dao.CodeDetailDao" />
+    	<property name="sqlSessionFactory" ref="platformSqlSessionFactory" />
+	</bean>
+
+	<!-- 六位代码预分配主信息dao -->
+	<bean id="codeMainDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.aisino.admin.companyCard.codeAssign.dao.CodeMainDao" />
+		<property name="sqlSessionFactory" ref="platformSqlSessionFactory" />
+	</bean>
+
+	<!-- 六位代码预分配dao -->
+	<bean id="codeAssignDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.aisino.admin.companyCard.codeAssign.dao.CodeAssignDao" />
+		<property name="sqlSessionFactory" ref="platformSqlSessionFactory" />
+	</bean>
+
+</beans>
