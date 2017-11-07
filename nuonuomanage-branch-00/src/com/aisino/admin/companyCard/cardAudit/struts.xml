@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <package name="company-card-audit" extends="portal-default" namespace="/companyCard/cardAudit">
+    <action name="*" class="com.aisino.admin.companyCard.cardAudit.action.CompanyCardAuditAction"
+            method="{1}Action">
+        <result name="compare">/companyCard/cardAudit/compare.jsp</result>
+    </action>
+    </package>
+</struts>
