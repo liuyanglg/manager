@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aisino.admin.companyCard.cardMaintain.dao.CompanyCardMaintainDao">
+
+    <select id="queryPage" parameterType="Page" resultType="CompanyCard">
+        <choose>
+            <!--系统管理员类型用户支持模糊查询-->
+            <when test="otherParams==null">
+                SELECT* FROM tb_cmp_card M
+                <where>
+                    <if test="paramObj!=null">
+                        <if test="paramObj.code!=null">M.code=#{paramObj.code}</if>
+                        <if test="paramObj.taxid!=null">AND M.taxid LIKE '${paramObj.taxid}%'</if>
+                        <if test="paramObj.name!=null">AND M.name LIKE '${paramObj.name}%'</if>
+                        <if test="paramObj.source!=null">AND M.source=#{paramObj.source}</if>
+                        <if test="paramObj.type!=null">AND M.type=#{paramObj.type}</if>
+                        <if test="paramObj.cert!=null">AND M.cert=#{paramObj.cert}</if>
+                        <if test="paramObj.status!=null">AND M.status=#{paramObj.status}</if>
+                    </if>
+                    AND M.status!=9
+                </where>
+            </when>
+            <!--非系统管理员类型用户支持模糊查询-->
+            <otherwise>
+                SELECT* FROM tb_cmp_card M
+                <where>
+                    <if test="paramObj!=null">
+                        <if test="paramObj.code==null and paramObj.taxid==null and paramObj.name==null">
+                            and 1=2
+                        </if>
+                        <if test="paramObj.code!=null">M.code=#{paramObj.code}</if>
+                        <if test="paramObj.taxid!=null">AND M.taxid = #{paramObj.taxid}</if>
+                        <if test="paramObj.name!=null">AND M.name = #{paramObj.name}</if>
+                        <if test="paramObj.source!=null">AND M.source=#{paramObj.source}</if>
+                        <if test="paramObj.type!=null">AND M.type=#{paramObj.type}</if>
+                        <if test="paramObj.cert!=null">AND M.cert=#{paramObj.cert}</if>
+                        <if test="paramObj.status!=null">AND M.status=#{paramObj.status}</if>
+                    </if>
+                    AND M.status!=9
+                </where>
+            </otherwise>
+        </choose>
+        <if test="orderCol!=null">
+            order by ${orderCol}
+        </if>
+        limit ${startIndex},${pageSize}
+    </select>
+
+    <select id="count" parameterType="Page" resultType="_int">
+        <choose>
+            <!--系统管理员类型用户支持模糊查询-->
+            <when test="otherParams==null">
+                SELECT COUNT(*) FROM tb_cmp_card M
+                <where>
+                    <if test="paramObj!=null">
+                        <if test="paramObj.code!=null">M.code=#{paramObj.code}</if>
+                        <if test="paramObj.taxid!=null">AND M.taxid LIKE '${paramObj.taxid}%'</if>
+                        <if test="paramObj.name!=null">AND M.name LIKE '${paramObj.name}%'</if>
+                        <if test="paramObj.source!=null">AND M.source=#{paramObj.source}</if>
+                        <if test="paramObj.type!=null">AND M.type=#{paramObj.type}</if>
+                        <if test="paramObj.cert!=null">AND M.cert=#{paramObj.cert}</if>
+                        <if test="paramObj.status!=null">AND M.status=#{paramObj.status}</if>
+                    </if>
+                    AND M.status!=9
+                </where>
+            </when>
+            <!--非系统管理员类型用户支持模糊查询-->
+            <otherwise>
+                SELECT COUNT(*) FROM tb_cmp_card M
+                <where>
+                    <if test="paramObj!=null">
+                        <if test="paramObj.code==null and paramObj.taxid==null and paramObj.name==null">
+                            and 1=2
+                        </if>
+                        <if test="paramObj.code!=null">M.code=#{paramObj.code}</if>
+                        <if test="paramObj.taxid!=null">AND M.taxid = #{paramObj.taxid}</if>
+                        <if test="paramObj.name!=null">AND M.name = #{paramObj.name}</if>
+                        <if test="paramObj.source!=null">AND M.source=#{paramObj.source}</if>
+                        <if test="paramObj.type!=null">AND M.type=#{paramObj.type}</if>
+                        <if test="paramObj.cert!=null">AND M.cert=#{paramObj.cert}</if>
+                        <if test="paramObj.status!=null">AND M.status=#{paramObj.status}</if>
+                    </if>
+                    AND M.status!=9
+                </where>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="queryByName" parameterType="String" resultType="CompanyCard">
+        SELECT * FROM tb_cmp_card  WHERE name=#{value} AND status!=9
+    </select>
+
+    <select id="queryByTaxid" parameterType="String" resultType="CompanyCard">
+        SELECT * FROM tb_cmp_card  WHERE taxid=#{value} AND status!=9
+    </select>
+
+    <select id="queryByCode" parameterType="String" resultType="CompanyCard">
+        SELECT * FROM tb_cmp_card  WHERE code=#{value} AND status!=9
+    </select>
+
+    <select id="queryById" parameterType="int" resultType="CompanyCard">
+        SELECT * FROM tb_cmp_card  WHERE id=#{value} AND status!=9
+    </select>
+
+    <update id="update" parameterType="CompanyCard">
+        update tb_cmp_card
+        <set>
+            <if test="name!=null">name=#{name},</if>
+            <if test="source!=null">source=#{source},</if>
+            <if test="type!=null">type=#{type},</if>
+            <if test="cert!=null">cert=#{cert},</if>
+            <if test="telephone!=null">telephone=#{telephone},</if>
+            <if test="address!=null">address=#{address},</if>
+            <if test="bank!=null">bank=#{bank},</if>
+            <if test="account!=null">account=#{account},</if>
+            <if test="status!=null">status=#{status},</if>
+            updatetime=now()
+        </set>
+        where code=#{code}
+    </update>
+</mapper>
+

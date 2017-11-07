@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <package name="company-code-assign" extends="portal-default" namespace="/companyCard/codeAssign">
+    <action name="*" class="com.aisino.admin.companyCard.codeAssign.action.CodeAssignAction"
+            method="{1}Action">
+        <result name="assign">/companyCard/cardAudit/assign.jsp</result>
+    </action>
+    </package>
+</struts>

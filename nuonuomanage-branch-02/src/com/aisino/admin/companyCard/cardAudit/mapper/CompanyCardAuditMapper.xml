@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aisino.admin.companyCard.cardAudit.dao.CompanyCardAuditDao">
+
+    <select id="get" resultType="CompanyCardAudit" parameterType="int">
+   		SELECT * FROM tb_cmp_card_audit where id=${value}
+   	</select>
+
+    <insert id="insert" parameterType="CompanyCardAudit">
+        INSERT INTO tb_cmp_card_audit(code,taxid,name,address,telephone,bank,account,source,type,createtime,note,cert)
+        value(#{code},#{taxid},#{name},#{address},#{telephone},#{bank},#{account},#{source},#{type},NOW(),#{note},#{cert})
+        <selectKey keyProperty="id" resultType="int">
+            SELECT MAX(id) as id FROM tb_cmp_card_audit
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="CompanyCardAudit">
+        UPDATE tb_cmp_card_audit
+        <set>
+            <if test="code != null">code=#{code},</if>
+            <if test="taxid != null">taxid=#{taxid},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="address != null">address=#{address},</if>
+            <if test="telephone != null">telephone=#{telephone},</if>
+            <if test="bank != null">bank=#{bank},</if>
+            <if test="account != null">account=#{account},</if>
+            <if test="source != null">source=#{source},</if>
+            <if test="type != null">type=#{type},</if>
+            <if test="note != null">note=#{note},</if>
+            <if test="cert != null">cert=#{cert},</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+		DELETE FROM  tb_cmp_card_audit WHERE id=#{value}
+   	</delete>
+
+    <update id="approveList" parameterType="map">
+        update tb_cmp_card_audit set auditor = #{user},status=#{status},auditTime=str_to_date(#{auditTimeStr}, '%Y-%m-%d %H:%i:%s')
+        where id in(${ids})
+    </update>
+
+    <update id="notApproveList" parameterType="map">
+        update tb_cmp_card_audit set auditor = #{user},status=#{status},auditTime=str_to_date(#{auditTimeStr}, '%Y-%m-%d %H:%i:%s')
+        where id in(${ids})
+    </update>
+
+    <update id="changeCert" parameterType="CompanyCardAudit">
+        update tb_cmp_card_audit set cert = #{cert}  where id=#{id}
+    </update>
+
+    <select id="queryByIds" parameterType="_int[]" resultType="CompanyCardAudit">
+        SELECT * FROM tb_cmp_card_audit where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteBatch" parameterType="_int[]">
+        delete FROM tb_cmp_card_audit where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkCode" parameterType="String" resultType="int">
+        SELECT count(code) FROM tb_cmp_card_audit where code=#{code} and status=0
+    </select>
+
+    <select id="queryPage" parameterType="Page" resultType="CompanyCardAudit">
+        <if test="otherParams==null">
+            SELECT * FROM tb_cmp_card_audit A
+            <where>
+                <if test="paramObj!=null">
+                    <if test="paramObj.code!=null">A.code=#{paramObj.code}</if>
+                    <if test="paramObj.source!=null">AND A.source=#{paramObj.source}</if>
+                    <if test="paramObj.type!=null">AND A.type=#{paramObj.type}</if>
+                    <if test="paramObj.dateRangStart!=null">AND A.createtime &gt; str_to_date(#{paramObj.dateRangStart},
+                        '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="paramObj.dateRangEnd">AND A.createtime &lt; str_to_date(#{paramObj.dateRangEnd}, '%Y-%m-%d
+                        %H:%i:%s')
+                    </if>
+                    <if test="paramObj.operType==1">AND A.code IS NOT NULL</if>
+                    <if test="paramObj.operType==0">AND A.code IS NULL</if>
+                    <if test="paramObj.status!=null">AND A.status=#{paramObj.status}</if>
+                </if>
+            </where>
+        </if>
+
+        <if test="otherParams!=null">
+            SELECT A.* FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT code,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.code = R.code
+            <where>
+                <if test="paramObj!=null">
+                    <if test="paramObj.code!=null">A.code=#{paramObj.code}</if>
+                    <if test="paramObj.source!=null">AND A.source=#{paramObj.source}</if>
+                    <if test="paramObj.type!=null">AND A.type=#{paramObj.type}</if>
+                    <if test="paramObj.dateRangStart!=null">AND A.createtime &gt; str_to_date(#{paramObj.dateRangStart},
+                        '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="paramObj.dateRangEnd">AND A.createtime &lt; str_to_date(#{paramObj.dateRangEnd}, '%Y-%m-%d
+                        %H:%i:%s')
+                    </if>
+                    <if test="paramObj.operType==1">AND A.code IS NOT NULL</if>
+                    <if test="paramObj.operType==0">AND A.code IS NULL</if>
+                    <if test="paramObj.status!=null">AND A.status=#{paramObj.status}</if>
+                </if>
+            </where>
+            UNION ALL
+            SELECT A.* FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT taxid,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+                AND code IS NULL
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.taxid = R.taxid
+            <where>
+                <if test="paramObj!=null">
+                    <if test="paramObj.code!=null">A.code=#{paramObj.code}</if>
+                    <if test="paramObj.source!=null">AND A.source=#{paramObj.source}</if>
+                    <if test="paramObj.type!=null">AND A.type=#{paramObj.type}</if>
+                    <if test="paramObj.dateRangStart!=null">AND A.createtime &gt; str_to_date(#{paramObj.dateRangStart},
+                        '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="paramObj.dateRangEnd">AND A.createtime &lt; str_to_date(#{paramObj.dateRangEnd}, '%Y-%m-%d
+                        %H:%i:%s')
+                    </if>
+                    <if test="paramObj.operType==1">AND A.code IS NOT NULL</if>
+                    <if test="paramObj.operType==0">AND A.code IS NULL</if>
+                    <if test="paramObj.status!=null">AND A.status=#{paramObj.status}</if>
+                </if>
+            </where>
+        </if>
+        <if test="orderCol!=null">
+            ORDER BY ${orderCol}
+        </if>
+        LIMIT ${startIndex},${pageSize}
+    </select>
+
+    <select id="count" parameterType="Page" resultType="_int">
+        <if test="otherParams==null">
+            SELECT COUNT(*) FROM tb_cmp_card_audit A
+            <where>
+                <if test="paramObj!=null">
+                    <if test="paramObj.code!=null">A.code=#{paramObj.code}</if>
+                    <if test="paramObj.source!=null">AND A.source=#{paramObj.source}</if>
+                    <if test="paramObj.type!=null">AND A.type=#{paramObj.type}</if>
+                    <if test="paramObj.dateRangStart!=null">AND A.createtime &gt; str_to_date(#{paramObj.dateRangStart},
+                        '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="paramObj.dateRangEnd">AND A.createtime &lt; str_to_date(#{paramObj.dateRangEnd}, '%Y-%m-%d
+                        %H:%i:%s')
+                    </if>
+                    <if test="paramObj.operType==1">AND A.code IS NOT NULL</if>
+                    <if test="paramObj.operType==0">AND A.code IS NULL</if>
+                    <if test="paramObj.status!=null">AND A.status=#{paramObj.status}</if>
+                </if>
+            </where>
+        </if>
+
+        <if test="otherParams!=null">
+            SELECT SUM(NUM) FROM
+            (SELECT COUNT(*) AS NUM FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT code,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.code = R.code
+            <where>
+                <if test="paramObj!=null">
+                    <if test="paramObj.code!=null">A.code=#{paramObj.code}</if>
+                    <if test="paramObj.source!=null">AND A.source=#{paramObj.source}</if>
+                    <if test="paramObj.type!=null">AND A.type=#{paramObj.type}</if>
+                    <if test="paramObj.dateRangStart!=null">AND A.createtime &gt; str_to_date(#{paramObj.dateRangStart},
+                        '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="paramObj.dateRangEnd">AND A.createtime &lt; str_to_date(#{paramObj.dateRangEnd}, '%Y-%m-%d
+                        %H:%i:%s')
+                    </if>
+                    <if test="paramObj.operType==1">AND A.code IS NOT NULL</if>
+                    <if test="paramObj.operType==0">AND A.code IS NULL</if>
+                    <if test="paramObj.status!=null">AND A.status=#{paramObj.status}</if>
+                </if>
+            </where>
+            UNION ALL
+            SELECT COUNT(*) AS NUM FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT taxid,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+                AND code IS NULL
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.taxid = R.taxid
+            <where>
+                <if test="paramObj!=null">
+                    <if test="paramObj.code!=null">A.code=#{paramObj.code}</if>
+                    <if test="paramObj.source!=null">AND A.source=#{paramObj.source}</if>
+                    <if test="paramObj.type!=null">AND A.type=#{paramObj.type}</if>
+                    <if test="paramObj.dateRangStart!=null">AND A.createtime &gt; str_to_date(#{paramObj.dateRangStart},
+                        '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="paramObj.dateRangEnd">AND A.createtime &lt; str_to_date(#{paramObj.dateRangEnd}, '%Y-%m-%d
+                        %H:%i:%s')
+                    </if>
+                    <if test="paramObj.operType==1">AND A.code IS NOT NULL</if>
+                    <if test="paramObj.operType==0">AND A.code IS NULL</if>
+                    <if test="paramObj.status!=null">AND A.status=#{paramObj.status}</if>
+                </if>
+            </where>
+            )AS TEMP_TABLE
+        </if>
+    </select>
+
+    <select id="queryPage4Metching" parameterType="Page" resultType="CompanyCardAudit">
+        <if test="otherParams==null">
+            SELECT * FROM tb_cmp_card_audit A
+            <where>
+                A.name LIKE CONCAT('%',#{paramObj.name},'%') OR A.taxid LIKE CONCAT('%',#{paramObj.name},'%')
+            </where>
+        </if>
+
+        <if test="otherParams!=null">
+            SELECT A.* FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT code,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.code = R.code
+            <where>
+                A.name LIKE CONCAT('%',#{paramObj.name},'%') OR A.taxid LIKE CONCAT('%',#{paramObj.name},'%')
+            </where>
+            UNION ALL
+            SELECT A.* FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT taxid,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+                AND code IS NULL
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.taxid = R.taxid
+            <where>
+                A.name LIKE CONCAT('%',#{paramObj.name},'%') OR A.taxid LIKE CONCAT('%',#{paramObj.name},'%')
+            </where>
+        </if>
+        <if test="orderCol!=null">
+            ORDER BY ${orderCol}
+        </if>
+        LIMIT ${startIndex},${pageSize}
+    </select>
+
+    <select id="count4Metching" parameterType="Page" resultType="_int">
+        <if test="otherParams==null">
+            SELECT COUNT(*) FROM tb_cmp_card_audit A
+            <where>
+                A.name LIKE CONCAT('%',#{paramObj.name},'%') OR A.taxid LIKE CONCAT('%',#{paramObj.name},'%')
+            </where>
+        </if>
+
+        <if test="otherParams!=null">
+            SELECT SUM(NUM) FROM
+            (SELECT COUNT(*) AS NUM FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT code,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.code = R.code
+            <where>
+                A.name LIKE CONCAT('%',#{paramObj.name},'%') OR A.taxid LIKE CONCAT('%',#{paramObj.name},'%')
+            </where>
+            UNION ALL
+            SELECT COUNT(*) AS NUM FROM tb_cmp_card_audit A INNER JOIN
+            ( SELECT DISTINCT taxid,serviceid FROM tb_code_taxid_serviceid
+            WHERE
+            <if test="otherParams.serviceIds!=null">
+                serviceid IN(${otherParams.serviceIds})
+                AND code IS NULL
+            </if>
+            <if test="otherParams.serviceIds==null">
+                1=2
+            </if>
+            ) AS R
+            ON A.taxid = R.taxid
+            <where>
+                A.name LIKE CONCAT('%',#{paramObj.name},'%') OR A.taxid LIKE CONCAT('%',#{paramObj.name},'%')
+            </where>
+            )AS TEMP_TABLE
+        </if>
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

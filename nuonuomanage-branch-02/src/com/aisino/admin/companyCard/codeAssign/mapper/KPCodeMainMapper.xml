@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aisino.admin.companyCard.codeAssign.dao.CodeMainDao">
+
+    <resultMap id="KPCodeMainDOResultMap" type="KPCodeMainDO">
+        <result column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="assign_company_name" property="assignCompanyName" jdbcType="VARCHAR"/>
+        <result column="assign_company_taxid" property="assignCompanyTaxid" jdbcType="VARCHAR"/>
+        <result column="assign_amount" property="assignAmount" jdbcType="INTEGER"/>
+        <result column="create_person" property="createPerson" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_person" property="modifyPerson" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <select id="get" resultMap="KPCodeMainDOResultMap" parameterType="int">
+        SELECT * FROM jskp_kpcode_assign_main where id=${value}
+    </select>
+
+    <insert id="insert" parameterType="KPCodeMainDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        jskp_kpcode_assign_main(assign_company_name,assign_company_taxid,assign_amount,create_person,create_time,modify_person,modify_time)
+        value(#{assignCompanyName},#{assignCompanyTaxid},#{assignAmount},#{createPerson},#{createTime},#{modifyPerson},#{modifyTime})
+    </insert>
+
+    <insert id="insertBatch" useGeneratedKeys="true" parameterType="java.util.List">
+        INSERT INTO
+        jskp_kpcode_assign_main(assign_company_name,assign_company_taxid,assign_amount,create_person,create_time,modify_person,modify_time)
+        VALUES
+        <foreach collection="list" item="KPCodeMain" index="index" separator=",">
+            (#{KPCodeMain.assignCompanyName},#{KPCodeMain.assignCompanyTaxid},#{KPCodeMain.assignAmount},#{KPCodeMain.createPerson},#{KPCodeMain.createTime},#{KPCodeMain.modifyPerson},#{KPCodeMain.modifyTime})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="KPCodeMainDO">
+        UPDATE jskp_kpcode_assign_main
+        <set>
+            <if test="assignCompanyName != null">assign_company_name=#{assignCompanyName},</if>
+            <if test="assignCompanyTaxid != null">assign_company_taxid=#{assignCompanyTaxid},</if>
+            <if test="assignAmount != null">assign_amount=#{assignAmount},</if>
+            <if test="createPerson != null">create_person=#{createPerson},</if>
+            <if test="createTime != null">create_time=#{createTime},</if>
+            <if test="modifyPerson != null">modify_person=#{modifyPerson},</if>
+            <if test="modifyTime != null">modify_time=#{modifyTime},</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM  jskp_kpcode_assign_main WHERE id=#{value}
+    </delete>
+
+
+    <select id="queryByIds" parameterType="_int[]" resultType="KPCodeMainDO">
+        SELECT * FROM jskp_kpcode_assign_main where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteBatch" parameterType="_int[]">
+        delete FROM jskp_kpcode_assign_main where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryByTaxid" resultMap="KPCodeMainDOResultMap" parameterType="String">
+        SELECT * FROM jskp_kpcode_assign_main where assign_company_taxid=#{value}
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

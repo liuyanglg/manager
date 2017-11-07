@@ -77,6 +77,7 @@
                         <option value="10">开票软件</option>
                         <option value="11">开票软件-百旺</option>
                         <option value="12">购方信息</option>
+                        <option value="33">工商信息</option>
                         <option value="30">诺诺网</option>
                         <option value="31">微信未登录</option>
                         <option value="32">微信已登录</option>

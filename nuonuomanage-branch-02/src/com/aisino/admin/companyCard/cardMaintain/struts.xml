@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <package name="company-card-maintain" extends="portal-default" namespace="/companyCard/cardMaintain">
+    <action name="*" class="com.aisino.admin.companyCard.cardMaintain.action.CompanyCardMaintainAction"
+            method="{1}Action">
+        <result name="query">/companyCard/cardMaintain/search.jsp</result>
+        <result name="update">/companyCard/cardMaintain/update.jsp</result>
+        <result name="add">/companyCard/cardMaintain/add.jsp</result>
+        <result name="editCode">/companyCard/cardMaintain/editCode.jsp</result>
+    </action>
+    </package>
+</struts>
