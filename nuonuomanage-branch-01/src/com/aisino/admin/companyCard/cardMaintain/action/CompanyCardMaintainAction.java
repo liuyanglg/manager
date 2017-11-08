@@ -6,6 +6,8 @@ import com.aisino.admin.companyCard.cardMaintain.utils.CmpCardApiUtils;
 import com.aisino.admin.global.paging.Page;
 import com.aisino.admin.global.utils.SqlInjectionProtection;
 import com.aisino.global.context.common.utils.JsonUtil;
+import nuonuo.jskp.common.constants.ErrorConstants;
+import nuonuo.jskp.common.utils.CardValidator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -73,16 +75,22 @@ public class CompanyCardMaintainAction extends CompanyCardMaintainBaseAction {
     public void addCardMaintainAction() {
         CompanyCard companyCard = buildCompanyCard();
         String execResult = "";
+        Boolean validator = CardValidator.checkCompanyName(companyCard.getName()) == ErrorConstants.CHECK_OK ? true : false;
+        if (!validator) {
+            execResult = "企业名称长度不合法";
+        }
         try {
-            CmpCardApiResponse apiResponse = CmpCardApiUtils.post(companyCard.convertJson());
-            if (apiResponse != null && "201".equals(apiResponse.getCode())) {
-                execResult = "success";
-            } else {
-                execResult = "error";
+            if (validator) {
+                CmpCardApiResponse apiResponse = CmpCardApiUtils.post(companyCard.convertJson());
+                if (apiResponse != null && "201".equals(apiResponse.getCode())) {
+                    execResult = "success";
+                } else {
+                    execResult = "添加过程中遇到了意外";
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            execResult = "error";
+            execResult = "添加过程中遇到了意外";
         } finally {
             this.sendMessage(execResult);
         }
@@ -108,20 +116,24 @@ public class CompanyCardMaintainAction extends CompanyCardMaintainBaseAction {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String errorMessage = "{\"message\":\"error\"}";
-        this.sendJson(errorMessage);
         return "update";
     }
 
     public void updateCardMaintainAction() {
         CompanyCard companyCard = buildCompanyCard();
         String execResult = "";
+        Boolean validator = CardValidator.checkCompanyName(companyCard.getName()) == ErrorConstants.CHECK_OK ? true : false;
+        if (!validator) {
+            execResult = "企业名称长度不合法";
+        }
         try {
-            companyCardMaintainService.update(companyCard);
-            execResult = "success";
+            if (validator) {
+                companyCardMaintainService.update(companyCard);
+                execResult = "success";
+            }
         } catch (Exception e) {
-            execResult = "error";
             e.printStackTrace();
+            execResult = "修改过程中遇到了意外";
         } finally {
             this.sendMessage(execResult);
         }

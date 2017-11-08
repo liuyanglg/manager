@@ -34,7 +34,7 @@ function add() {
                             $('#cmpMaintain_query').datagrid('reload');
                             $('#cmpMaintain_add_div').dialog('close');
                         } else {
-                            $.messager.alert("提示", "添加失败");
+                            $.messager.alert("提示", "添加失败，"+result);
                         }
                         $.messager.progress('close');
                     }
@@ -163,7 +163,7 @@ function mod() {
                                 $.messager.alert("操作提示", "修改成功");
                                 $("#cmpMaintain_query").querygrid('reload');
                             } else {
-                                $.messager.alert("操作提示", "修改失败");
+                                $.messager.alert("操作提示", "修改失败，"+data);
                             }
                         }
                     });

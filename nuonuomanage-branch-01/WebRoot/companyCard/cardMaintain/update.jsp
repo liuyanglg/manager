@@ -45,7 +45,7 @@
                 <th>企业名称:</th>
                 <td>
                     <input type="text" name="name" value="${card.name}" class='easyui-validatebox' style="width:200px"
-                           data-options="required:true,missingMessage:'企业名称不能为空'" validType="length[2,35]"/>
+                           data-options="required:true,missingMessage:'企业名称不能为空'" validType="length[2,50]"/>
                 </td>
                 <th>开票信息来源:</th>
                 <td>

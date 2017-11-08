@@ -50,11 +50,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<th>企业名称:</th>
 					<td>
-						<input type="text" name="name" class='easyui-validatebox' data-options="required:true,missingMessage:'企业名称不能为空'" validType="length[2,35]"/>
+						<input type="text" name="name" class='easyui-validatebox' data-options="required:true,missingMessage:'企业名称不能为空'" validType="length[2,50]" style="width:195px"/>
 					</td>
 					<th>开票信息来源:</th>
 					<td>
-						<select name='source' class="easyui-combobox" editable="false" readonly="readonly">
+						<select name='source' class="easyui-combobox" editable="false" readonly="readonly" style="width:200px" data-options="panelHeight:'auto'">
 							<option value="99">ADMIN</option>
 							<option value="20">crm</option>
 							<option value="10">开票软件</option>
@@ -72,11 +72,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<th>税号:</th>
 					<td>
-						<input type="text" name="taxid" class='easyui-validatebox' data-options="required:true,missingMessage:'税号不能为空'" validType="length[15,20]"/>
+						<input type="text" name="taxid" class='easyui-validatebox' data-options="required:true,missingMessage:'税号不能为空'" validType="length[15,20]" style="width:195px"/>
 					</td>
 					<th>纳税人标识:</th>
 					<td>
-						<select name='type' class="easyui-combobox" editable="false">
+						<select name='type' class="easyui-combobox" editable="false" style="width:200px" data-options="panelHeight:'auto'">
 							<option value="0">一般纳税人</option>
 							<option value="1">小规模</option>
 							<option value="2">个体工商户</option>
@@ -86,11 +86,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<th>地址:</th>
 					<td>
-						<input type="text" name="address" class='easyui-validatebox' data-options="required:true,missingMessage:'地址不能为空'" validType="length[3,60]"/>
+						<input type="text" name="address" class='easyui-validatebox' data-options="required:true,missingMessage:'地址不能为空'" validType="length[3,60]" style="width:195px"/>
 					</td>
 					<th>认证标识:</th>
 					<td>
-						<select name='cert' class="easyui-combobox" editable="false">
+						<select name='cert' class="easyui-combobox" editable="false" style="width:200px" data-options="panelHeight:'auto'">
 							<option value="0">未认证</option>
 							<option value="1">认证</option>
 						</select>
@@ -99,17 +99,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<tr>
 					<th>开户行:</th>
 					<td>
-						<input type="text" name="bank" class='easyui-validatebox' data-options="required:false" validType="length[0,40]"/>
+						<input type="text" name="bank" class='easyui-validatebox' data-options="required:false" validType="length[0,40]" style="width:195px"/>
 					</td>
 					<th>电话:</th>
 					<td>
-						<input type="text" name="telephone" class='easyui-validatebox' data-options="required:true,validType:'phoneRex'"/>
+						<input type="text" name="telephone" class='easyui-validatebox' data-options="required:true,validType:'phoneRex'" style="width:195px"/>
 					</td>
 				</tr>
 				<tr>
 					<th>银行账号</th>
 					<td>
-						<input type="text" name="account" class='easyui-validatebox' data-options="required:false" validType="length[9,25]"/>
+						<input type="text" name="account" class='easyui-validatebox' data-options="required:false" validType="length[9,25]" style="width:195px"/>
 					</td>
 				</tr>
 			</table>
