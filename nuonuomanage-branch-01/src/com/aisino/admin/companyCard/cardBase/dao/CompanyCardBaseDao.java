@@ -19,7 +19,7 @@ import java.util.Map;
  * @UpateLog :    Name    Date    Reason/Contents
  */
 public interface CompanyCardBaseDao {
-    public List<Map<String,Object>> getCompany(UserModel user, String c_companyid) throws DAOException;
-    public List getCompanyId(UserModel user)throws DAOException;
-    public List getServiceId(String companyIds);
+    public List<Map<String,Object>> getCompany(UserModel user, String companyId) throws DAOException;
+    public List getCmpIdByAuthority(UserModel user)throws DAOException;
+    public List queryServiceId(List<String> companyIdList);
 }

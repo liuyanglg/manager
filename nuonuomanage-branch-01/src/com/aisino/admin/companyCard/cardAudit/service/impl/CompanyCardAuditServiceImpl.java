@@ -342,17 +342,17 @@ public class CompanyCardAuditServiceImpl implements CompanyCardAuditService {
             }
             return 1;
         }
-        if ((s1.equals("30")) || (s1.equals("32")) || (s1.equals("40")) || (s1.equals("99"))) {
+        if ((s1.equals("30")) || (s1.equals("32")) || (s1.equals("33")) || (s1.equals("40")) || (s1.equals("99"))) {
             if ((s2.equals("10")) || (s2.equals("11"))) {
                 return -1;
             }
-            if ((s2.equals("30")) || (s2.equals("32")) || (s2.equals("40")) || (s2.equals("99"))) {
+            if ((s2.equals("30")) || (s2.equals("32")) || (s2.equals("33")) || (s2.equals("40")) || (s2.equals("99"))) {
                 return 0;
             }
             return 1;
         }
         if (s1.equals("12")) {
-            if ((s2.equals("10")) || (s2.equals("11")) || (s2.equals("30")) || (s2.equals("32")) || (s2.equals("40")) || (s2.equals("99"))) {
+            if ((s2.equals("10")) || (s2.equals("11")) || (s2.equals("30")) || (s2.equals("32")) || (s2.equals("33")) || (s2.equals("40")) || (s2.equals("99"))) {
                 return -1;
             }
             if (s2.equals("12")) {
@@ -361,7 +361,7 @@ public class CompanyCardAuditServiceImpl implements CompanyCardAuditService {
             return 1;
         }
         if ((s1.equals("50")) || (s1.equals("31"))) {
-            if ((s2.equals("10")) || (s2.equals("11")) || (s2.equals("30")) || (s2.equals("32")) || (s2.equals("40")) || (s2.equals("99")) ||
+            if ((s2.equals("10")) || (s2.equals("11")) || (s2.equals("30")) || (s2.equals("32")) || (s2.equals("33")) || (s2.equals("40")) || (s2.equals("99")) ||
                     (s2.equals("12"))) {
                 return -1;
             }

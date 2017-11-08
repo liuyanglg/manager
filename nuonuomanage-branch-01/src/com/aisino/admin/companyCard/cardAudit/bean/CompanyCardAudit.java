@@ -323,20 +323,20 @@ public class CompanyCardAudit implements Serializable {
             if (osource != null) {
                 if (source == 10 || source == 11) {
                     compResult = source;
-                } else if (source == 30 || source == 32 || source == 40) {
+                } else if (source == 30 || source == 32 || source==33||source == 40) {
                     if (osource == 10 || osource == 11) {
                         compResult = osource;
                     } else {
                         compResult = source;
                     }
                 } else if (source == 12) {
-                    if (osource == 10 || osource == 11 || osource == 30 || osource == 32 || osource == 40) {
+                    if (osource == 10 || osource == 11 || osource == 30 || osource == 32 || osource==33||osource == 40) {
                         compResult = osource;
                     } else {
                         compResult = source;
                     }
                 } else if (source == 50 || source == 31) {
-                    if (osource == 10 || osource == 11 || osource == 30 || osource == 32 || osource == 40 || osource == 12) {
+                    if (osource == 10 || osource == 11 || osource == 30 || osource == 32 ||osource==33|| osource == 40 || osource == 12) {
                         compResult = osource;
                     } else {
                         compResult = source;

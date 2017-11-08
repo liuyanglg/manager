@@ -19,15 +19,7 @@ import java.util.Map;
  * @UpateLog :    Name    Date    Reason/Contents
  */
 public interface CompanyCardBaseService {
-    public List<Map<String, Object>> getCompany(UserModel user, String c_companyid) throws ServiceException;
+    List<Map<String, Object>> getCompany(UserModel user, String companyId) throws ServiceException;
 
-    public String getCompanyId(UserModel user) throws ServiceException;
-
-    public String getServicedId(UserModel userModel, String companyIds) throws ServiceException;
-
-    public String getServicedId(UserModel userModel) throws ServiceException;
-
-    public Map<String,Object> getServiceIdMap(UserModel userModel, String companyIds) throws ServiceException;
-
-    public Map<String,Object> getServiceIdMap(UserModel userModel) throws ServiceException;
+    String getServiceId(UserModel userModel, List<String> selectCmpIdList) throws ServiceException;
 }

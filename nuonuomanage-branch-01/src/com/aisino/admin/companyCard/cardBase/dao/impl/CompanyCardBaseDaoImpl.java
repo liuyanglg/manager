@@ -18,13 +18,13 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
      * @Method : getCompany
      * @Description :该方法从frameProject模块拷贝，根据用户类型获取companyId
      * @param user :
-     * @param c_companyid :
+     * @param companyId :
      * @return : java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      * @author : liuya
      * @createDate : 2017-08-07 星期一 14:40:56
      */
     @Override
-    public List<Map<String, Object>> getCompany(UserModel user, String c_companyid) throws DAOException {
+    public List<Map<String, Object>> getCompany(UserModel user, String companyId) throws DAOException {
         int expand1 = 0, expand2 = 0;//修改设置选中的公司节点都展开
         //省级
         String sql = " SELECT c_subid as id,c_subname as text,'closed' as state FROM portal_choose_subcompany  WHERE c_parentid is null  ";
@@ -64,21 +64,21 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
                     List<Map<String, Object>> list3 = baseJdbcDAO.getJdbcTemplate().queryForList(sql3);
                     if (list3 != null && list3.size() > 0) {
                         for (Map<String, Object> map3 : list3) {
-                            if (map3.containsValue(c_companyid)) {
+                            if (map3.containsValue(companyId)) {
                                 expand1 = 1;
                                 expand2 = 1;
                                 break;
                             }
                         }
                         map2.put("children", list3);
-                        if (expand1 == 1 && c_companyid != null) {
+                        if (expand1 == 1 && companyId != null) {
                             map2.put("state", "open");
                             expand1 = 0;
                         }
                     }
                 }
                 map.put("children", list2);
-                if (expand2 == 1 && c_companyid != null) {
+                if (expand2 == 1 && companyId != null) {
                     map.put("state", "open");
                     expand2 = 0;
                 }
@@ -88,7 +88,7 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
     }
 
     @Override
-    public List getCompanyId(UserModel user) throws DAOException {
+    public List getCmpIdByAuthority(UserModel user) throws DAOException {
         Set<String> set = new HashSet<String>();
         List<String> list = new ArrayList<String>();
         //省级
@@ -104,7 +104,7 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
                     + "AND s.c_parentid=a.c_subid AND c_ownerid='" + user.getUserid() + "' )";
         }
 
-        List<String> listProvince= baseJdbcDAO.getJdbcTemplate().queryForList(sql,String.class);
+        List<String> listProvince = baseJdbcDAO.getJdbcTemplate().queryForList(sql, String.class);
         set.addAll(listProvince);
         for (String str : listProvince) {
             //市级
@@ -118,7 +118,7 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
                         + "AND s.c_parentid=a.c_subid AND g.c_ownerid='" + user.getUserid() + "' ";
             }
 
-            List<String> listCity = baseJdbcDAO.getJdbcTemplate().queryForList(sql2,String.class);
+            List<String> listCity = baseJdbcDAO.getJdbcTemplate().queryForList(sql2, String.class);
             set.addAll(listCity);
             if (listCity != null && listCity.size() > 0) {
                 //市级下面公司
@@ -128,7 +128,7 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
                         sql3 = "SELECT a.c_subid as id FROM portal_choose_subcompany a,portal_choose_subcompany b "
                                 + "WHERE a.c_parentid=b.c_subid AND a.c_subid='" + user.getCompanyid() + "'";
                     }
-                    List<String> listCounty = baseJdbcDAO.getJdbcTemplate().queryForList(sql3,String.class);
+                    List<String> listCounty = baseJdbcDAO.getJdbcTemplate().queryForList(sql3, String.class);
                     set.addAll(listCounty);
                 }
             }
@@ -137,25 +137,27 @@ public class CompanyCardBaseDaoImpl implements CompanyCardBaseDao {
         return list;
     }
 
-    /**
-     * @Method : getServiceId
-     * @Description : 根据companyId查询所属服务单位Id
-     * @param companyIds :
-     * @return : java.util.List
-     * @author : liuya
-     * @createDate : 2017-08-07 星期一 14:43:43
-     */
+
     @Override
-    public List getServiceId(String companyIds)
-            throws DAOException {
-        List<String> list = null;
-        if(companyIds!=null&&companyIds.trim().length()!=0){
-            StringBuffer sql=new StringBuffer("SELECT DISTINCT " +
-                    "g.`c_organizationid` AS servieid  " +
-                    "FROM global_company g " +
-                    "WHERE g.`c_companyid` IN("+companyIds+") ");
-            list= baseJdbcDAO.getJdbcTemplate().queryForList(sql.toString(),String.class);
+    public List queryServiceId(List<String> companyIdList) {
+        List<String> serviceIdList = null;
+        if (companyIdList == null || companyIdList.size() == 0) {
+            return serviceIdList;
         }
-        return list;
+
+        StringBuffer sql = new StringBuffer("SELECT DISTINCT " +
+                "g.`c_organizationid` AS servieid  " +
+                "FROM global_company g " +
+                "WHERE g.`c_companyid` IN(");
+        int len = sql.length();
+        for (String id : companyIdList) {
+            sql.append("'" + id + "',");
+        }
+        if (sql.length() > len) {
+            sql = sql.deleteCharAt(sql.length() - 1);
+        }
+        sql.append(");");
+        serviceIdList = baseJdbcDAO.getJdbcTemplate().queryForList(sql.toString(), String.class);
+        return serviceIdList;
     }
 }

@@ -1,17 +1,11 @@
 package com.aisino.admin.companyCard.cardMaintain.action;
 
-import com.aisino.admin.companyCard.cardBase.service.CompanyCardBaseService;
 import com.aisino.admin.companyCard.cardMaintain.bean.CmpCardApiResponse;
 import com.aisino.admin.companyCard.cardMaintain.bean.CompanyCard;
-import com.aisino.admin.companyCard.cardMaintain.service.CompanyCardMaintainService;
 import com.aisino.admin.companyCard.cardMaintain.utils.CmpCardApiUtils;
 import com.aisino.admin.global.paging.Page;
 import com.aisino.admin.global.utils.SqlInjectionProtection;
-import com.aisino.admin.global.utils.StringUtils;
-import com.aisino.global.context.common.action.TemplateAction;
 import com.aisino.global.context.common.utils.JsonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -24,132 +18,7 @@ import java.util.Map;
 
 @Controller
 @Scope("prototype")
-public class CompanyCardMaintainAction extends TemplateAction {
-    @Autowired
-    @Qualifier("companyCardMaintainService")
-    private CompanyCardMaintainService companyCardMaintainService;
-    @Autowired
-    @Qualifier("companyCardBaseService")
-    private CompanyCardBaseService companyCardBaseService;
-    private Map<String, Object> map;
-    /*-----------Start: 分页属性-----------*/
-    private int rows;
-    private int page;
-    /*-----------End: 分页属性-----------*/
-
-    /*-----------Start: CompanyCard属性-----------*/
-    private String code;
-    private String taxid;
-    private String name;
-    private String address;
-    private String telephone;
-    private String bank;
-    private String account;
-    private Integer type;
-    private Integer cert;
-    private Integer source;
-    private Integer status;
-    /*-----------End: -----------*/
-
-    /*-----------Start: 其他页面查询参数-----------*/
-    private int init;
-    private String oldCode;
-    private ArrayList<String> codes;
-    /*-----------End: -----------*/
-
-
-    public void setMap(Map<String, Object> map) {
-        this.map = map;
-    }
-
-    public void setInit(int init) {
-        this.init = init;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
-
-    public void setCodes(ArrayList<String> codes) {
-        this.codes = codes;
-    }
-
-    public void setOldCode(String oldCode) {
-        this.oldCode = oldCode;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public void setTaxid(String taxid) {
-        this.taxid = taxid;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public void setBank(String bank) {
-        this.bank = bank;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public void setCert(Integer cert) {
-        this.cert = cert;
-    }
-
-    public void setSource(Integer source) {
-        this.source = source;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    /**
-     * @Method : buildCompanyCard
-     * @Description : 将页面传来的参数封装成CompanyCard对象
-     * @return : com.aisino.admin.companyCard.cardMaintain.bean.CompanyCard
-     * @author : liuya
-     * @createDate : 2017-08-07 星期一 14:32:38
-     */
-    public CompanyCard buildCompanyCard() {
-        CompanyCard companyCard = new CompanyCard();
-        companyCard.setCode(code);
-        companyCard.setTaxid(taxid);
-        companyCard.setName(name);
-        companyCard.setAddress(address);
-        companyCard.setTelephone(telephone);
-        companyCard.setBank(bank);
-        companyCard.setAccount(account);
-        companyCard.setType(type);
-        companyCard.setCert(cert);
-        companyCard.setSource(source);
-        companyCard.setStatus(status);
-
-        return companyCard;
-    }
-
+public class CompanyCardMaintainAction extends CompanyCardMaintainBaseAction {
     /**
      * @Method : queryCardMaintain
      * @Description : 查询维护表记录
@@ -158,23 +27,9 @@ public class CompanyCardMaintainAction extends TemplateAction {
      * @createDate : 2017-08-07 星期一 14:33:03
      */
     public void queryCardMaintainAction() {
-        String userType = this.getUserModel().getUserType().toString();//获取用户类型
-        if (userType.contains("USER") && init == 0) {
-            String key = "lastQueryTime";
-            HttpSession session = this.getHttpSession();
-            Long currentQueryTime = System.currentTimeMillis();
-            Long lastQueryTime = (Long) session.getAttribute(key);
-            if (lastQueryTime == null) {
-                session.setAttribute(key, currentQueryTime);
-            } else {
-                Long timeDiff = currentQueryTime - lastQueryTime;
-                if (timeDiff < 10 * 1000) {
-                    this.sendMessage("查询频率过高");
-                    return;
-                } else {
-                    session.setAttribute(key, currentQueryTime);
-                }
-            }
+        if (!queryLimit()) {
+            this.sendMessage("查询频率过高");
+            return;
         }
 
         CompanyCard companyCard = buildCompanyCard();
@@ -182,19 +37,6 @@ public class CompanyCardMaintainAction extends TemplateAction {
         int total = 0;
         List<CompanyCard> list = null;
         if (init == 0 && rows <= 100) {
-            if (companyCard != null) {
-                if (StringUtils.isBlank(companyCard.getCode())) {
-                    companyCard.setCode(null);
-                }
-                if (StringUtils.isBlank(companyCard.getName())) {
-                    companyCard.setName(null);
-                }
-                if (StringUtils.isBlank(companyCard.getTaxid())) {
-                    companyCard.setTaxid(null);
-                }
-            } else {
-                companyCard = new CompanyCard();
-            }
             if (SqlInjectionProtection.sqlValidate(companyCard.getName())) {
                 list = new ArrayList<CompanyCard>();
             } else if (SqlInjectionProtection.sqlValidate(companyCard.getTaxid())) {
@@ -204,14 +46,11 @@ public class CompanyCardMaintainAction extends TemplateAction {
                 cardPage.setCurPageIndex(page);
                 cardPage.setPageSize(rows);
                 Map<String, Object> paramsMap = new HashMap<String, Object>();
+                String userType = this.getUserModel().getUserType().toString();//获取用户类型
                 paramsMap.put("userType", userType);
+                cardPage.setOtherParams(paramsMap);
                 if (userType.contains("SUPER")) {
-                    /*超级用户查询所有数据*/
-                    cardPage.setOtherParams(null);//设置为空值，MyBatis就不加限定条件了
-                } else if (userType.contains("USER")) {
-                    /*普通用户查询所有数据,但不能模糊查询*/
-                    paramsMap.put("userType", userType);
-                    cardPage.setOtherParams(paramsMap);
+                    cardPage.setOtherParams(null);//通过otherParams参数是否为null来判断是否可以模糊查询
                 }
                 list = companyCardMaintainService.queryPage(cardPage);
                 total = companyCardMaintainService.count(cardPage);
@@ -265,7 +104,6 @@ public class CompanyCardMaintainAction extends TemplateAction {
                     card.setName(card.getName().replaceAll("\"", "&quot;"));
                 }
                 getServletRequest().setAttribute("card", card);
-                return "update";
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -374,11 +212,11 @@ public class CompanyCardMaintainAction extends TemplateAction {
             }
         }
         if (apiResponse != null) {
-            if (apiResponse.getCode() .equals("200")) {
+            if (apiResponse.getCode().equals("200")) {
                 isCodeLegal = true;
             }
             message = apiResponse.getMessage();
-        }else{
+        } else {
             message = "查询出错！";
         }
 
@@ -387,7 +225,7 @@ public class CompanyCardMaintainAction extends TemplateAction {
         this.sendJson(JsonUtil.toDateFormatFastJsonString(map));
     }
 
-    public String  hrefEditCodeAction(){
+    public String hrefEditCodeAction() {
         getServletRequest().setAttribute("code", oldCode);
         return "editCode";
     }
@@ -415,6 +253,32 @@ public class CompanyCardMaintainAction extends TemplateAction {
                 execResult = "success";
         }
         this.sendMessage(execResult);
+    }
+
+    public boolean queryLimit() {
+        boolean enableQuery = false;
+        String userType = this.getUserModel().getUserType().toString();//获取用户类型
+        if (userType.contains("SUPER")) {
+            enableQuery = true;
+        } else if (userType.contains("USER")) {
+            String key = "lastQueryTime";
+            HttpSession session = this.getHttpSession();
+            Long currentQueryTime = System.currentTimeMillis();
+            Long lastQueryTime = (Long) session.getAttribute(key);
+            if (lastQueryTime == null) {
+                session.setAttribute(key, currentQueryTime);
+                enableQuery = true;
+            } else {
+                Long timeDiff = currentQueryTime - lastQueryTime;
+                if (timeDiff < 10 * 1000) {
+                    enableQuery = false;
+                } else {
+                    enableQuery = true;
+                    session.setAttribute(key, currentQueryTime);
+                }
+            }
+        }
+        return enableQuery;
     }
 
 }
